@@ -1,0 +1,26 @@
+<fines>
+    <fine
+        first_name="Дима"
+        last_name="Киров"
+        type = "SAFETY_TECHNOLOGY"
+        fine_amount = "340.00"
+        date_time="2010-11-05 15:00:03" />
+    <fine
+        last_name="Шевчук"
+        first_name="Тарас"
+        type = "SAFETY_TECHNOLOGY"
+        fine_amount = "245.50"
+        date_time="2021-05-05 12:45:03" />
+    <fine
+        date_time="2022-02-06 11:19:03"
+        first_name = "Іра"
+        type = "ALCOHOL_INTOXICATION"
+        fine_amount = "345.50"
+        last_name = "Франко" />
+    <fine
+        first_name="Леся"
+        last_name="Українка"
+        type = "ALCOHOL_INTOXICATION"
+        fine_amount = "145.50"
+        date_time ="2022-03-14 10:09:53" />
+</fines>
