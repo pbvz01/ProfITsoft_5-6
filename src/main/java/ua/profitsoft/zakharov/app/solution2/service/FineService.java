@@ -1,26 +1,28 @@
 package ua.profitsoft.zakharov.app.solution2.service;
 
+import ua.profitsoft.zakharov.app.solution2.analytics.FineAnalytics;
 import ua.profitsoft.zakharov.app.solution2.model.Fine;
-import ua.profitsoft.zakharov.app.solution2.service.utils.FineJsonUtils;
-import ua.profitsoft.zakharov.app.solution2.service.utils.FineSaxUtils;
-
+import ua.profitsoft.zakharov.app.solution2.stream.JsonFineWriter;
+import ua.profitsoft.zakharov.app.solution2.stream.SaxFineReader;
 import java.util.List;
+import java.util.Map;
 
 public class FineService {
-    private FineSaxUtils utilsInput;
-    private FineJsonUtils utilsOutput;
+    private SaxFineReader saxFineReader;
+    private JsonFineWriter jsonFineWriter;
 
     public FineService() {
-        utilsInput = new FineSaxUtils();
-        utilsOutput = new FineJsonUtils();
+        saxFineReader = new SaxFineReader();
+        jsonFineWriter = new JsonFineWriter();
     }
 
-    public List<Fine> getAllFines() {
-        return utilsInput.getAllFinesFromAllXmlFiles();
+    public List<Fine> getFinesFromXmlFiles() {
+        return saxFineReader.getFinesFromXmlFiles();
     }
 
-    public void writeAllFinesToJson(List<Fine> fineList) {
-        utilsOutput.writeAllFinesToJsonByType(fineList);
+    public void writeAnalyticTypeToJsonFile(List<Fine> fineList) {
+        Map<String, Double> analyticByFine = FineAnalytics.getTypeAnalyticsByFine(fineList);
+        jsonFineWriter.writeFinesToJsonFile(analyticByFine);
     }
 
 }

@@ -7,12 +7,15 @@ import java.util.regex.Pattern;
 
 public class ParserPersonXmlFile {
     private final static String DIRECTORY_PATH = "./src/main/java/ua/profitsoft/zakharov/app/solution1/";
-    private final static String REGEX_ATTRIBUTE_SURNAME = "\\b(surname)\\s*=\\s*\"([^\"]+)\"";
-    private final static String REGEX_ATTRIBUTE_NAME = "\\b(name)\\s*=\\s*\"([^\"]+)\"";
+    private final static String REGEX_PERSON_ELEMENT = "\\s*(<person)(($)|(\\s.+))";
+    private final static String REGEX_SURNAME_ATTRIBUTE = "\\b(surname)\\s*=\\s*\"([^\"]+)\"";
+    private final static String REGEX_NAME_ATTRIBUTE = "\\b(name)\\s*=\\s*\"([^\"]+)\"";
+    private final static String REGEX_EMPTY_LINE = "(?m)^[ \\t]*\\r?\\n";
+    private final static String REGEX_JOIN_ATTRIBUTES = "\\b(surname)\\s*=\\s*\"";
 
-    public void parseXmlFile(String nameFile) {
+    public static void parseXmlFile(String nameFile) {
         Path inputPath = Path.of(DIRECTORY_PATH + nameFile);
-        Path outPath = Path.of(DIRECTORY_PATH + "Copy_" + nameFile);
+        Path outPath = Path.of("copy_" + inputPath);
 
         try(BufferedReader reader = new BufferedReader(new FileReader(inputPath.toFile()));
         BufferedWriter writer = new BufferedWriter(new FileWriter(outPath.toFile()))) {
@@ -20,7 +23,7 @@ public class ParserPersonXmlFile {
           while (reader.ready()) {
               String xmlElement = reader.readLine();
 
-              if (isNotPersonsXmlElement(xmlElement)) {
+              if (isPersonXmlElement(xmlElement)) {
                   while(isXmlElementNotClosed(xmlElement)) {
                       xmlElement += "\n" + reader.readLine();
                   }
@@ -32,53 +35,53 @@ public class ParserPersonXmlFile {
           }
 
         } catch (IOException exp) {
-            throw new RuntimeException("File not found. File must be in the class's directory");
+            throw new RuntimeException(exp.getMessage());
         }
 
     }
-
-    private boolean isNotPersonsXmlElement(String xmlElement) {
-        return !(xmlElement.startsWith("<persons>")) && !(xmlElement.startsWith("</persons>"));
+    private static boolean isPersonXmlElement(String xmlElement) {
+        return xmlElement.matches(REGEX_PERSON_ELEMENT);
     }
-    private boolean isXmlElementNotClosed(String xmlElement) {
+    private static boolean isXmlElementNotClosed(String xmlElement) {
         return !(xmlElement.endsWith("/>"));
     }
-    private String parseXmlAttributes(String xmlElement) {
-        String attributeSurname = getAttributeSurname(xmlElement);
-        String attributeName = getAttributeName(xmlElement);
-        String correctAttributeName = getAttributeNameJoinSurname(attributeName, attributeSurname);
+    private static String parseXmlAttributes(String xmlElement) {
+        String surname = getSurnameAttribute(xmlElement);
+        String name = getNameAttribute(xmlElement);
+        String fullName = joinNameAndSurnameAttribute(name, surname);
 
-        String parseXmlElement = xmlElement.replace(" " + attributeSurname, "");
-        parseXmlElement = parseXmlElement.replace(attributeName, correctAttributeName);
+        String parseXmlElement = xmlElement.replace(" " + surname, "");
+        parseXmlElement = parseXmlElement.replace(name, fullName);
+        parseXmlElement = parseXmlElement.replaceAll(REGEX_EMPTY_LINE, "");
         return parseXmlElement;
     }
-    private String getAttributeSurname(String line) {
-        Pattern pattern = Pattern.compile(REGEX_ATTRIBUTE_SURNAME);
+    private static String getSurnameAttribute(String line) {
+        Pattern pattern = Pattern.compile(REGEX_SURNAME_ATTRIBUTE);
         Matcher match = pattern.matcher(line);
-        String attributeSurname = "";
+        String surnameAttribute = "";
 
         while (match.find()) {
-            attributeSurname = match.group();
+            surnameAttribute = match.group();
         }
 
-        return attributeSurname;
+        return surnameAttribute;
     }
-    private String getAttributeName(String line) {
-        Pattern pattern = Pattern.compile(REGEX_ATTRIBUTE_NAME);
+    private static String getNameAttribute(String line) {
+        Pattern pattern = Pattern.compile(REGEX_NAME_ATTRIBUTE);
         Matcher match = pattern.matcher(line);
-        String attributeName = "";
+        String nameAttribute = "";
 
         while (match.find()) {
-            attributeName = match.group();
+            nameAttribute = match.group();
         }
 
-        return attributeName;
+        return nameAttribute;
     }
-    private String getAttributeNameJoinSurname(String atrName, String atrSurname) {
+    private static String joinNameAndSurnameAttribute(String atrName, String atrSurname) {
         StringBuilder builder = new StringBuilder(atrName);
         return builder
                 .deleteCharAt(atrName.length() - 1)
-                .append(atrSurname.replaceAll("\\b(surname)\\s*=\\s*\"", " "))
+                .append(atrSurname.replaceAll(REGEX_JOIN_ATTRIBUTES, " "))
                 .toString();
     }
 }
