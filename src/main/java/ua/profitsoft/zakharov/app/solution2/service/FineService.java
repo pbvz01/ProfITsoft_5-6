@@ -22,7 +22,7 @@ public class FineService {
 
     public void writeAnalyticTypeToJsonFile(List<Fine> fineList) {
         Map<String, Double> analyticByFine = FineAnalytics.getTypeAnalyticsByFine(fineList);
-        jsonFineWriter.writeFinesToJsonFile(analyticByFine);
+        jsonFineWriter.writeAnalyticByFinesToJsonFile(analyticByFine);
     }
 
 }

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public class JsonFineWriter {
-    public void writeFinesToJsonFile(Map<String, Double> fineMap) {
+    public void writeAnalyticByFinesToJsonFile(Map<String, Double> fineMap) {
         JsonFactory factory = new JsonFactory();
         try(JsonGenerator generator =
                     factory.createGenerator(new FileOutputStream(
