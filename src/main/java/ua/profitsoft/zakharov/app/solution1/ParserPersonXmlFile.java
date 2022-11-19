@@ -13,9 +13,9 @@ public class ParserPersonXmlFile {
     private final static String REGEX_EMPTY_LINE = "(?m)^[ \\t]*\\r?\\n";
     private final static String REGEX_JOIN_ATTRIBUTES = "\\b(surname)\\s*=\\s*\"";
 
-    public static void parseXmlFile(String nameFile) {
+    public void parseXmlFile(String nameFile) {
         Path inputPath = Path.of(DIRECTORY_PATH + nameFile);
-        Path outPath = Path.of("copy_" + inputPath);
+        Path outPath = Path.of(DIRECTORY_PATH + "copy" + nameFile);
 
         try(BufferedReader reader = new BufferedReader(new FileReader(inputPath.toFile()));
         BufferedWriter writer = new BufferedWriter(new FileWriter(outPath.toFile()))) {
@@ -39,13 +39,13 @@ public class ParserPersonXmlFile {
         }
 
     }
-    private static boolean isPersonXmlElement(String xmlElement) {
+    private boolean isPersonXmlElement(String xmlElement) {
         return xmlElement.matches(REGEX_PERSON_ELEMENT);
     }
-    private static boolean isXmlElementNotClosed(String xmlElement) {
+    private boolean isXmlElementNotClosed(String xmlElement) {
         return !(xmlElement.endsWith("/>"));
     }
-    private static String parseXmlAttributes(String xmlElement) {
+    private String parseXmlAttributes(String xmlElement) {
         String surname = getSurnameAttribute(xmlElement);
         String name = getNameAttribute(xmlElement);
         String fullName = joinNameAndSurnameAttribute(name, surname);
@@ -55,7 +55,7 @@ public class ParserPersonXmlFile {
         parseXmlElement = parseXmlElement.replaceAll(REGEX_EMPTY_LINE, "");
         return parseXmlElement;
     }
-    private static String getSurnameAttribute(String line) {
+    private String getSurnameAttribute(String line) {
         Pattern pattern = Pattern.compile(REGEX_SURNAME_ATTRIBUTE);
         Matcher match = pattern.matcher(line);
         String surnameAttribute = "";
@@ -66,7 +66,7 @@ public class ParserPersonXmlFile {
 
         return surnameAttribute;
     }
-    private static String getNameAttribute(String line) {
+    private String getNameAttribute(String line) {
         Pattern pattern = Pattern.compile(REGEX_NAME_ATTRIBUTE);
         Matcher match = pattern.matcher(line);
         String nameAttribute = "";
@@ -77,7 +77,7 @@ public class ParserPersonXmlFile {
 
         return nameAttribute;
     }
-    private static String joinNameAndSurnameAttribute(String atrName, String atrSurname) {
+    private String joinNameAndSurnameAttribute(String atrName, String atrSurname) {
         StringBuilder builder = new StringBuilder(atrName);
         return builder
                 .deleteCharAt(atrName.length() - 1)
