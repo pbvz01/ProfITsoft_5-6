@@ -5,6 +5,7 @@ import ua.profitsoft.zakharov.app.solution2.annotation.Property;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
 
 public class Model {
     @Property(name = "stringProperty")
@@ -33,5 +34,18 @@ public class Model {
                 ", myNumber=" + myNumber +
                 ", timeProperty=" + timeProperty +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Model model = (Model) o;
+        return myNumber == model.myNumber && Objects.equals(stringProperty, model.stringProperty) && Objects.equals(timeProperty, model.timeProperty);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stringProperty, myNumber, timeProperty);
     }
 }
