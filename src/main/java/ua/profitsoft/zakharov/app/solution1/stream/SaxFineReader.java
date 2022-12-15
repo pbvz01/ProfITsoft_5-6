@@ -63,7 +63,7 @@ public class SaxFineReader {
          */
     }
 
-    private synchronized List<Fine> parseFile(Path path) {
+    private List<Fine> parseFile(Path path) {
         SAXParser parser;
         try {
             parser = SAXParserFactory.newInstance().newSAXParser();
